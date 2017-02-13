@@ -31,22 +31,25 @@ class Player(object):
     hand1 = []
     hand2 = []
 
-    def __init__(self, name, total_money, current_bet=0):
+    def __init__(self, name, total_money=0, current_bet=0):
         self.name = name
         self.total_money = total_money
         self.current_bet = current_bet
 
+    def set_total_money(self,money):
+        self.total_money = money
+
     def make_bet(self, bet):
         self.current_bet = bet
 
-    def hit(self, deck = Deck()):
+    def hit(self, deck=Deck()):
         if deck.is_empty():
             print 'The deck is empty.'
             return
         else:
             self.hand1.append(deck.deck_list.pop())
 
-    def double_down(self, deck = Deck()):
+    def double_down(self, deck=Deck()):
         if deck.is_empty():
             print 'The deck is empty.'
             return
@@ -71,63 +74,39 @@ class Player(object):
 
 # Introduction
 def introduction():
-    global player1
-    global player2
-    global player3
+    print 'Welcome to BlackJack Game!'
+    print 'There will be 3 players and 1 dealer in this game.'
+    print 'Wins are paid out at 1:1 ratio.'
+    print 'Good luck!\n'
 
-    print 'Welcome to BlackJack Game! There will be 3 players and 1 dealer in this game! Good Luck!\n'
-
+# check money input
+def input_total_money(player):
     while True:
         try:
-            input1 = int(raw_input('Player 1, please enter the total money you want to put in the game: '))
+            user_input = int(raw_input('%s, please enter the total money you want to put in the game: ' % player.name))
         except:
             print 'Try again - you must enter an integer which is > 0.'
             continue
         else:
-            if input1 <= 0:
+            if user_input <= 0:
                 print 'Try again - you must enter an integer which is > 0.'
                 continue
             else:
-                player1 = Player('Player 1', input1)
-                while True:
-                    try:
-                        input2 = int(raw_input('Player 2, please enter the total money you want to put in the game: '))
-                    except:
-                        print 'Try again - you must enter an integer which is > 0.'
-                        continue
-                    else:
-                        if input1 <= 0:
-                            print 'Try again - you must enter an integer which is > 0.'
-                            continue
-                        else:
-                            player2 = Player('Player 2', input2)
-                            while True:
-                                try:
-                                    input3 = int(raw_input('Player 3, please enter the total money you want to put in the game: '))
-                                except:
-                                    print 'Try again - you must enter an integer which is > 0.'
-                                    continue
-                                else:
-                                    if input1 <= 0:
-                                        print 'Try again - you must enter an integer which is > 0.'
-                                        continue
-                                    else:
-                                        player3 = Player('Player 3', input3)
-                                        break
-                            break
+                player.set_total_money(user_input)
                 break
 
-# make bet
-def make_bet():
-
-
 # A game starts here:
+player1 = Player('Player 1')
+player2 = Player('Player 2')
+player3 = Player('Player 3')
+
 new_deck = Deck()
 
 new_deck.shuffle_deck()
 
 introduction()
 
-
-
+input_total_money(player1)
+input_total_money(player2)
+input_total_money(player3)
 
