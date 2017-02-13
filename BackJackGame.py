@@ -1,5 +1,6 @@
 from random import shuffle
 
+# Card
 class Card(object):
     def __init__(self,suit,size):
         self.suit = suit
@@ -8,6 +9,7 @@ class Card(object):
     def __str__(self):
         return '%s: %d' % (self.suit,self.size)
 
+# Deck
 class Deck(object):
     deck_list = []
 
@@ -24,14 +26,18 @@ class Deck(object):
     def is_empty(self):
         return len(self.deck_list) == 0
 
+# Player
 class Player(object):
     hand1 = []
     hand2 = []
 
-    def __init__(self, name, total_money, current_bet):
+    def __init__(self, name, total_money, current_bet=0):
         self.name = name
         self.total_money = total_money
         self.current_bet = current_bet
+
+    def make_bet(self, bet):
+        self.current_bet = bet
 
     def hit(self, deck = Deck()):
         if deck.is_empty():
@@ -60,15 +66,67 @@ class Player(object):
         else:
             self.hand2.append(self.hand1.pop())
 
-    def print_info(self):
-        print 'Name: %s, Total money: %d, Current bet: %d, Hand 1: %s, Hand 2: %s' % (self.name, self.total_money, self.current_bet, str(self.hand1), str(self.hand2))
+    def __str__(self):
+        return 'Name: %s, Total money: %d, Current bet: %d, Hand 1: %s, Hand 2: %s' % (self.name, self.total_money, self.current_bet, str(self.hand1), str(self.hand2))
+
+# Introduction
+def introduction():
+    global player1
+    global player2
+    global player3
+
+    print 'Welcome to BlackJack Game! There will be 3 players and 1 dealer in this game! Good Luck!\n'
+
+    while True:
+        try:
+            input1 = int(raw_input('Player 1, please enter the total money you want to put in the game: '))
+        except:
+            print 'Try again - you must enter an integer which is > 0.'
+            continue
+        else:
+            if input1 <= 0:
+                print 'Try again - you must enter an integer which is > 0.'
+                continue
+            else:
+                player1 = Player('Player 1', input1)
+                while True:
+                    try:
+                        input2 = int(raw_input('Player 2, please enter the total money you want to put in the game: '))
+                    except:
+                        print 'Try again - you must enter an integer which is > 0.'
+                        continue
+                    else:
+                        if input1 <= 0:
+                            print 'Try again - you must enter an integer which is > 0.'
+                            continue
+                        else:
+                            player2 = Player('Player 2', input2)
+                            while True:
+                                try:
+                                    input3 = int(raw_input('Player 3, please enter the total money you want to put in the game: '))
+                                except:
+                                    print 'Try again - you must enter an integer which is > 0.'
+                                    continue
+                                else:
+                                    if input1 <= 0:
+                                        print 'Try again - you must enter an integer which is > 0.'
+                                        continue
+                                    else:
+                                        player3 = Player('Player 3', input3)
+                                        break
+                            break
+                break
+
+# make bet
+def make_bet():
+
 
 # A game starts here:
 new_deck = Deck()
+
 new_deck.shuffle_deck()
 
-print 'Welcome to BlackJack Game! Please enter the number of players who want to play this game: '
-
+introduction()
 
 
 
