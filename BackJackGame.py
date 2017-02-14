@@ -11,10 +11,10 @@ class Card(object):
 
 # Deck
 class Deck(object):
-    deck_list = []
-
     def __init__(self):
-        for i in xrange(1,14):
+        self.deck_list = []
+
+        for i in xrange(1, 14):
             self.deck_list.append(Card('Clubs', i))
             self.deck_list.append(Card('Diamonds', i))
             self.deck_list.append(Card('Hearts', i))
@@ -28,22 +28,21 @@ class Deck(object):
 
 # Player
 class Player(object):
-    hand1 = []
-    hand2 = []
-
     def __init__(self, name, total_money=0, current_bet=0):
         self.name = name
         self.total_money = total_money
         self.current_bet = current_bet
+        self.hand1 = []
+        self.hand2 = []
 
-    def hit(self, deck=Deck()):
+    def hit(self, deck):
         if deck.is_empty():
             print 'The deck is empty.'
             return
         else:
             self.hand1.append(deck.deck_list.pop())
 
-    def double_down(self, deck=Deck()):
+    def double_down(self, deck):
         if deck.is_empty():
             print 'The deck is empty.'
             return
@@ -68,6 +67,7 @@ class Player(object):
 
 # Introduction
 def introduction():
+    print ''
     print 'Welcome to BlackJack Game!'
     print 'There will be 3 players and 1 dealer in this game.'
     print 'Wins are paid out at 1:1 ratio.'
@@ -114,7 +114,16 @@ def deal_cards():
         input_current_bet(player3)
         print ''
 
+        player1.hand1.append(new_deck.deck_list.pop())
+        player1.hand1.append(new_deck.deck_list.pop())
+        player2.hand1.append(new_deck.deck_list.pop())
+        player2.hand1.append(new_deck.deck_list.pop())
+        player3.hand1.append(new_deck.deck_list.pop())
+        player3.hand1.append(new_deck.deck_list.pop())
 
+        print 'Player 1 deals two cards: ', player1.hand1[0], ', ', player1.hand1[1]
+        print 'Player 2 deals two cards: ', player2.hand1[0], ', ', player2.hand1[1]
+        print 'Player 3 deals two cards: ', player3.hand1[0], ', ', player3.hand1[1]
 
 
 
