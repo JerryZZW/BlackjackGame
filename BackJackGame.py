@@ -36,12 +36,6 @@ class Player(object):
         self.total_money = total_money
         self.current_bet = current_bet
 
-    def set_total_money(self,money):
-        self.total_money = money
-
-    def make_bet(self, bet):
-        self.current_bet = bet
-
     def hit(self, deck=Deck()):
         if deck.is_empty():
             print 'The deck is empty.'
@@ -79,7 +73,7 @@ def introduction():
     print 'Wins are paid out at 1:1 ratio.'
     print 'Good luck!\n'
 
-# check money input
+# Check and input player's total money
 def input_total_money(player):
     while True:
         try:
@@ -92,8 +86,37 @@ def input_total_money(player):
                 print 'Try again - you must enter an integer which is > 0.'
                 continue
             else:
-                player.set_total_money(user_input)
+                player.total_money = user_input
                 break
+
+# Check and input player's current bet
+def input_current_bet(player):
+    while True:
+        try:
+            user_input = int(raw_input('%s, please enter the bet you want to put in this round: ' % player.name))
+        except:
+            print 'Try again - you must enter an integer which is > 0 and <= your total money'
+            continue
+        else:
+            if user_input <= 0 or user_input > player.total_money:
+                print 'Try again - you must enter an integer which is > 0 and <= your total money'
+                continue
+            else:
+                player.current_bet = user_input
+                break
+
+# Deal cards
+def deal_cards():
+    while True:
+        print ''
+        input_current_bet(player1)
+        input_current_bet(player2)
+        input_current_bet(player3)
+        print ''
+
+
+
+
 
 # A game starts here:
 player1 = Player('Player 1')
@@ -110,3 +133,4 @@ input_total_money(player1)
 input_total_money(player2)
 input_total_money(player3)
 
+deal_cards()
