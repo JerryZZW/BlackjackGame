@@ -62,6 +62,9 @@ class Player(object):
         else:
             self.hand2.append(self.hand1.pop())
 
+    def surrender(self):
+        self.current_bet *= 0.5
+
     def __str__(self):
         return 'Name: %s, Total money: %d, Current bet: %d, Hand 1: %s, Hand 2: %s' % (self.name, self.total_money, self.current_bet, str(self.hand1), str(self.hand2))
 
