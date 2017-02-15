@@ -196,7 +196,7 @@ def deal_cards():
         check_blackjack(player2)
         check_blackjack(player3)
 
-
+        
 
 # A game starts here:
 player1 = Player('Player 1')

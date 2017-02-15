@@ -1,1 +1,1 @@
-# BlackjackGame
+# BlackjackGame for multiple players (3 players and 1 dealer)
