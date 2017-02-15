@@ -7,7 +7,16 @@ class Card(object):
         self.size = size
 
     def __str__(self):
-        return '%s: %d' % (self.suit,self.size)
+        if self.size == 1:
+            return '%s: %s' % (self.suit, 'A')
+        elif self.size == 11:
+            return '%s: %s' % (self.suit, 'J')
+        elif self.size == 12:
+            return '%s: %s' % (self.suit, 'Q')
+        elif self.size == 13:
+            return '%s: %s' % (self.suit, 'K')
+        else:
+            return '%s: %d' % (self.suit, self.size)
 
 # Deck
 class Deck(object):
@@ -65,6 +74,13 @@ class Player(object):
     def surrender(self):
         self.current_bet *= 0.5
 
+    def insurance(self):
+        if self.total_money < self.current_bet*0.5:
+            print "Fail. You don't have enough money to buy an insurance."
+        else:
+            self.total_money -= self.current_bet*0.5
+            print 'Succeed. Your total money has been subtracted by half your current bet.'
+
     def __str__(self):
         return 'Name: %s, Total money: %d, Current bet: %d, Hand 1: %s, Hand 2: %s' % (self.name, self.total_money, self.current_bet, str(self.hand1), str(self.hand2))
 
@@ -106,7 +122,52 @@ def input_current_bet(player):
                 continue
             else:
                 player.current_bet = user_input
+                player.total_money -= user_input
                 break
+
+# Check "yes" and "no" input from user
+def check_yes_no(player):
+    while True:
+        user_input = raw_input('%s, please enter y or n to make your decision: ' % player.name)
+        if user_input == 'y' or user_input == 'n':
+            return user_input
+        else:
+            print 'Try again - you must enter either y or n: '
+            continue
+
+# Check Black Jack
+def check_blackjack(player):
+    if (player.hand1[0].size == 1 and player.hand1[1].size == 10) or (player.hand1[0].size == 10 and player.hand1[1].size == 1):
+        print 'Player %s has the Black Jack!!!' % player.name
+    elif dealer[0].size == 1 and dealer[1].size == 10:
+        print 'Dealer has the Black Jack!!!'
+    elif dealer[1].size == 1:
+        print 'Dealer has an A, does the player want to buy insurance for this round? ', "(y for 'yes', n for 'no)'"
+        if check_yes_no(player) == 'y':
+            player.insurance()
+            if dealer[0] == 10:
+                print "Dealer's hold card is 10."
+                player.current_bet *= 2
+                print "Player %s's current bet has been doubled!" % player.name
+            else:
+                print 'Dealer has no Black Jack. Game continues.'
+
+    if (player.hand1[0].size == 1 and player.hand1[1].size == 10) or (player.hand1[0].size == 10 and player.hand1[1].size == 1):
+        if (dealer[0].size == 1 and dealer[1].size == 10) or (dealer[0].size == 10 and dealer[1].size == 1):
+            print 'Dealer also has the Black Jack!!!'
+            print 'Player %s keeps the current bet.' % player.name
+        else:
+            player.current_bet *= 2
+            print 'Dealer has no Black Jack.'
+            print "Player %s's current bet has been doubled!" % player.name
+
+    if (dealer[0].size == 1 and dealer[1].size == 10) or (dealer[0].size == 10 and dealer[1].size == 1):
+        if (player.hand1[0].size == 1 and player.hand1[1].size == 10) or (player.hand1[0].size == 10 and player.hand1[1].size == 1):
+            print 'Player %s also has the Black Jack!'
+            print 'Player %s keeps the current bet.' % player.name
+        else:
+            player.current_bet = 0
+            print "Dealer wins Player %s's current bet!!!"
 
 # Deal cards
 def deal_cards():
@@ -123,10 +184,17 @@ def deal_cards():
         player2.hand1.append(new_deck.deck_list.pop())
         player3.hand1.append(new_deck.deck_list.pop())
         player3.hand1.append(new_deck.deck_list.pop())
+        dealer.append(new_deck.deck_list.pop())
+        dealer.append(new_deck.deck_list.pop())
 
         print 'Player 1 deals two cards: ', player1.hand1[0], ', ', player1.hand1[1]
         print 'Player 2 deals two cards: ', player2.hand1[0], ', ', player2.hand1[1]
         print 'Player 3 deals two cards: ', player3.hand1[0], ', ', player3.hand1[1]
+        print 'Dealer deals two cards: (hold card), ', dealer[1]
+
+        check_blackjack(player1)
+        check_blackjack(player2)
+        check_blackjack(player3)
 
 
 
@@ -134,6 +202,7 @@ def deal_cards():
 player1 = Player('Player 1')
 player2 = Player('Player 2')
 player3 = Player('Player 3')
+dealer = []
 
 new_deck = Deck()
 
