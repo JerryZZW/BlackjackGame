@@ -201,7 +201,7 @@ def input_player_choice(player):
 
 # check bust
 def check_bust(player):
-
+    return
 
 # Deal cards
 def deal_cards():
