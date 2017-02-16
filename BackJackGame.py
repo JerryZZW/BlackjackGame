@@ -138,7 +138,7 @@ def check_yes_no(player):
 # Check Black Jack
 def check_blackjack(player):
     if (player.hand1[0].size == 1 and player.hand1[1].size == 10) or (player.hand1[0].size == 10 and player.hand1[1].size == 1):
-        print 'Player %s has the Black Jack!!!' % player.name
+        print '%s has the Black Jack!!!' % player.name
     elif dealer[0].size == 1 and dealer[1].size == 10:
         print 'Dealer has the Black Jack!!!'
     elif dealer[1].size == 1:
@@ -148,26 +148,60 @@ def check_blackjack(player):
             if dealer[0] == 10:
                 print "Dealer's hold card is 10."
                 player.current_bet *= 2
-                print "Player %s's current bet has been doubled!" % player.name
+                print "%s's current bet has been doubled!" % player.name
             else:
                 print 'Dealer has no Black Jack. Game continues.'
 
     if (player.hand1[0].size == 1 and player.hand1[1].size == 10) or (player.hand1[0].size == 10 and player.hand1[1].size == 1):
         if (dealer[0].size == 1 and dealer[1].size == 10) or (dealer[0].size == 10 and dealer[1].size == 1):
             print 'Dealer also has the Black Jack!!!'
-            print 'Player %s keeps the current bet.' % player.name
+            print '%s keeps the current bet.' % player.name
         else:
             player.current_bet *= 2
             print 'Dealer has no Black Jack.'
-            print "Player %s's current bet has been doubled!" % player.name
+            print "%s's current bet has been doubled!" % player.name
 
     if (dealer[0].size == 1 and dealer[1].size == 10) or (dealer[0].size == 10 and dealer[1].size == 1):
         if (player.hand1[0].size == 1 and player.hand1[1].size == 10) or (player.hand1[0].size == 10 and player.hand1[1].size == 1):
-            print 'Player %s also has the Black Jack!'
-            print 'Player %s keeps the current bet.' % player.name
+            print '%s also has the Black Jack!' % player.name
+            print '%s keeps the current bet.' % player.name
         else:
             player.current_bet = 0
-            print "Dealer wins Player %s's current bet!!!"
+            print "Dealer wins %s's current bet!!!" % player.name
+
+    if (dealer[0].size != 1 and dealer[1].size != 10) or (dealer[0].size != 10 and dealer[1].size != 1
+    ) or (player.hand1[0].size != 1 and player.hand1[1].size != 10) or (player.hand1[0].size != 10 and player.hand1[1].size != 1):
+        print 'Neither Dealer or %s has the Black Jack.' % player.name
+
+# check and input player's choice (i.e. hit, stand, and etc.)
+def input_player_choice(player):
+    while True:
+        user_input = raw_input('%s, please enter a choice: hit, stand, double, split, or surrender ' % player.name)
+        if user_input == 'hit':
+            print '%s chooses to hit.' % player.name
+            player.hit(new_deck)
+            break
+        elif user_input == 'stand':
+            break
+        elif user_input == 'double':
+            print '%s chooses to double down.' % player.name
+            player.double_down(new_deck)
+            break
+        elif user_input == 'split':
+            print '%s chooses to split the cards.' % player.name
+            player.split()
+            break
+        elif user_input == 'surrender':
+            print '%s chooses to surrender.' % player.name
+            player.surrender()
+            break
+        else:
+            print "Try again - you must enter 'hit', 'stand', 'double', 'split', or 'surrender'."
+            continue
+
+# check bust
+def check_bust(player):
+
 
 # Deal cards
 def deal_cards():
@@ -192,11 +226,23 @@ def deal_cards():
         print 'Player 3 deals two cards: ', player3.hand1[0], ', ', player3.hand1[1]
         print 'Dealer deals two cards: (hold card), ', dealer[1]
 
+        print ''
         check_blackjack(player1)
         check_blackjack(player2)
         check_blackjack(player3)
 
-        
+        print ''
+        input_player_choice(player1)
+        input_player_choice(player2)
+        input_player_choice(player3)
+
+        print ''
+        check_bust(player1)
+        check_bust(player2)
+        check_bust(player3)
+
+        print ''
+
 
 # A game starts here:
 player1 = Player('Player 1')
