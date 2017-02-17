@@ -2,7 +2,7 @@ from random import shuffle
 
 # Card
 class Card(object):
-    def __init__(self,suit,size):
+    def __init__(self, suit, size):
         self.suit = suit
         self.size = size
 
@@ -37,10 +37,11 @@ class Deck(object):
 
 # Player
 class Player(object):
-    def __init__(self, name, total_money=0, current_bet=0):
+    def __init__(self, name):
         self.name = name
-        self.total_money = total_money
-        self.current_bet = current_bet
+        self.total_money = 0
+        self.current_bet = 0
+        self.status = 0
         self.hand1 = []
         self.hand2 = []
 
@@ -82,7 +83,8 @@ class Player(object):
             print 'Succeed. Your total money has been subtracted by half your current bet.'
 
     def __str__(self):
-        return 'Name: %s, Total money: %d, Current bet: %d, Hand 1: %s, Hand 2: %s' % (self.name, self.total_money, self.current_bet, str(self.hand1), str(self.hand2))
+        return 'Name: %s, Total money: %d, Current bet: %d, Hand 1: %s, Hand 2: %s' % (
+            self.name, self.total_money, self.current_bet, [str(x) for x in self.hand1], [str(x) for x in self.hand2])
 
 # Introduction
 def introduction():
@@ -176,7 +178,7 @@ def check_blackjack(player):
 # check and input player's choice (i.e. hit, stand, and etc.)
 def input_player_choice(player):
     while True:
-        user_input = raw_input('%s, please enter a choice: hit, stand, double, split, or surrender ' % player.name)
+        user_input = raw_input('%s, please enter a choice: hit, stand, double, split, or surrender: ' % player.name)
         if user_input == 'hit':
             print '%s chooses to hit.' % player.name
             player.hit(new_deck)
@@ -196,7 +198,7 @@ def input_player_choice(player):
             player.surrender()
             break
         else:
-            print "Try again - you must enter 'hit', 'stand', 'double', 'split', or 'surrender'."
+            print "Try again - you must enter 'hit', 'stand', 'double', 'split', or 'surrender'. "
             continue
 
 # check bust
@@ -231,18 +233,20 @@ def deal_cards():
         check_blackjack(player2)
         check_blackjack(player3)
 
-        print ''
-        input_player_choice(player1)
-        input_player_choice(player2)
-        input_player_choice(player3)
+        while True:
+            print ''
+            input_player_choice(player1)
+            input_player_choice(player2)
+            input_player_choice(player3)
 
-        print ''
-        check_bust(player1)
-        check_bust(player2)
-        check_bust(player3)
+            print ''
+            check_bust(player1)
+            check_bust(player2)
+            check_bust(player3)
 
-        print ''
+            print ''
 
+        
 
 # A game starts here:
 player1 = Player('Player 1')
