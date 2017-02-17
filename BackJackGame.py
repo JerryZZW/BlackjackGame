@@ -184,10 +184,12 @@ def input_player_choice(player):
             player.hit(new_deck)
             break
         elif user_input == 'stand':
+            player.status = 1
             break
         elif user_input == 'double':
             print '%s chooses to double down.' % player.name
             player.double_down(new_deck)
+            player.status = 1
             break
         elif user_input == 'split':
             print '%s chooses to split the cards.' % player.name
@@ -196,6 +198,7 @@ def input_player_choice(player):
         elif user_input == 'surrender':
             print '%s chooses to surrender.' % player.name
             player.surrender()
+            player.status = 1
             break
         else:
             print "Try again - you must enter 'hit', 'stand', 'double', 'split', or 'surrender'. "
@@ -203,7 +206,21 @@ def input_player_choice(player):
 
 # check bust
 def check_bust(player):
-    return
+    count_hand1 = 0
+    count_hand2 = 0
+
+    for x in player.hand1:
+        count_hand1 += x.size
+
+    for x in player.hand2:
+        count_hand2 += x.size
+
+    if count_hand1 > 21 or count_hand1 >21:
+        print "%s bust !!! Dealer wins %s's bet." % player.name
+        player.current_bet = 0
+        return True
+    else:
+        return False
 
 # Deal cards
 def deal_cards():
@@ -236,17 +253,46 @@ def deal_cards():
         while True:
             print ''
             input_player_choice(player1)
+            if check_bust(player1) == True:
+                break
+            elif player1.status == 1:
+                break
+            else:
+                continue
+
+        while True:
+            print ''
             input_player_choice(player2)
+            if check_bust(player2) == True:
+                break
+            elif player2.status == 1:
+                break
+            else:
+                continue
+
+        while True:
+            print ''
             input_player_choice(player3)
+            if check_bust(player3) == True:
+                break
+            elif player3.status == 1:
+                break
+            else:
+                continue
 
-            print ''
-            check_bust(player1)
-            check_bust(player2)
-            check_bust(player3)
+        print ''
+        print "Dealer's hand: %s" % [str(x) for x in dealer]
 
-            print ''
+        while True:
+            count_dealer = 0
+            for x in dealer:
+                count_dealer += x.size
 
-        
+            if count_dealer < 17:
+                dealer.append(new_deck.deck_list.pop())
+
+
+
 
 # A game starts here:
 player1 = Player('Player 1')
