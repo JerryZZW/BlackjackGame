@@ -75,8 +75,8 @@ class Player(object):
                 self.current_bet *= 2
 
     def split(self):
-        if self.hand1[0] != self.hand1[1]:
-            print 'You can not split the cards.'
+        if len(self.hand1) == 0 or (self.hand1[0] != self.hand1[1]):
+            print '%s can not split the cards.' % self.name
             return
         else:
             self.hand2.append(self.hand1.pop())
@@ -97,6 +97,13 @@ class Player(object):
         self.status = 0
         self.hand1 = []
         self.hand2 = []
+
+    def reset_hands(self):
+        self.hand1 = []
+        self.hand2 = []
+
+    def print_hands(self):
+        print 'Name: %s, Hand 1: %s, Hand 2: %s' % (self.name, [str(x) for x in self.hand1], [str(x) for x in self.hand2])
 
     def __str__(self):
         return 'Name: %s, Total money: %d, Current bet: %d, Hand 1: %s, Hand 2: %s' % (
@@ -232,7 +239,7 @@ def check_bust(player):
         count_hand2 += x.size
 
     if count_hand1 > 21 or count_hand1 >21:
-        print "%s bust !!! Dealer wins %s's bet." % player.name
+        print "%s bust !!! Dealer wins %s's bet." % (player.name,player.name)
         player.current_bet = 0
         return True
     else:
@@ -242,6 +249,7 @@ def check_bust(player):
 def check_hands(player):
     while True:
         print ''
+        player.print_hands()
         input_player_choice(player)
         if check_bust(player) == True:
             break
@@ -249,6 +257,7 @@ def check_hands(player):
             break
         else:
             continue
+    player.print_hands()
 
 # Check hands's size
 def check_hands_size(hands):
@@ -263,11 +272,14 @@ def check_hands_size(hands):
 def compare_size(player):
     if check_hands_size(dealer) > check_hands_size(player.hand1) or check_hands_size(dealer) > check_hands_size(player.hand2):
         print 'Dealer has larger size. %s loses the current bet.' % player.name
+        player.print_hands()
         player.current_bet = 0
     elif check_hands_size(dealer) == check_hands_size(player.hand1) or check_hands_size(dealer) == check_hands_size(player.hand2):
         print 'Dealer and %s have the same size. %s keeps the current bet' % player.name
+        player.print_hands()
     else:
         print "Dealer has smaller size. %s's current bet doubles." % player.name
+        player.print_hands()
         player.current_bet *= 2
 
 # check if players want to play one more round
@@ -283,6 +295,11 @@ def check_one_more_round():
 # Deal cards
 def deal_cards():
     while True:
+        print ''
+        input_total_money(player1)
+        input_total_money(player2)
+        input_total_money(player3)
+
         print ''
         input_current_bet(player1)
         input_current_bet(player2)
@@ -307,6 +324,10 @@ def deal_cards():
         check_blackjack(player1)
         check_blackjack(player2)
         check_blackjack(player3)
+
+        player1.reset_hands()
+        player2.reset_hands()
+        player3.reset_hands()
 
         check_hands(player1)
         check_hands(player2)
@@ -359,9 +380,5 @@ new_deck = Deck()
 new_deck.shuffle_deck()
 
 introduction()
-
-input_total_money(player1)
-input_total_money(player2)
-input_total_money(player3)
 
 deal_cards()
