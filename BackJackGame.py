@@ -35,6 +35,15 @@ class Deck(object):
     def is_empty(self):
         return len(self.deck_list) == 0
 
+    def reset(self):
+        self.deck_list = []
+
+        for i in xrange(1, 14):
+            self.deck_list.append(Card('Clubs', i))
+            self.deck_list.append(Card('Diamonds', i))
+            self.deck_list.append(Card('Hearts', i))
+            self.deck_list.append(Card('Spades', i))
+
 # Player
 class Player(object):
     def __init__(self, name):
@@ -81,6 +90,13 @@ class Player(object):
         else:
             self.total_money -= self.current_bet*0.5
             print 'Succeed. Your total money has been subtracted by half your current bet.'
+
+    def reset(self):
+        self.total_money = 0
+        self.current_bet = 0
+        self.status = 0
+        self.hand1 = []
+        self.hand2 = []
 
     def __str__(self):
         return 'Name: %s, Total money: %d, Current bet: %d, Hand 1: %s, Hand 2: %s' % (
@@ -222,6 +238,48 @@ def check_bust(player):
     else:
         return False
 
+# Check players' hands
+def check_hands(player):
+    while True:
+        print ''
+        input_player_choice(player)
+        if check_bust(player) == True:
+            break
+        elif player.status == 1:
+            break
+        else:
+            continue
+
+# Check hands's size
+def check_hands_size(hands):
+    count = 0
+
+    for x in hands:
+        count += x.size
+
+    return count
+
+# Compare the size with the dealer
+def compare_size(player):
+    if check_hands_size(dealer) > check_hands_size(player.hand1) or check_hands_size(dealer) > check_hands_size(player.hand2):
+        print 'Dealer has larger size. %s loses the current bet.' % player.name
+        player.current_bet = 0
+    elif check_hands_size(dealer) == check_hands_size(player.hand1) or check_hands_size(dealer) == check_hands_size(player.hand2):
+        print 'Dealer and %s have the same size. %s keeps the current bet' % player.name
+    else:
+        print "Dealer has smaller size. %s's current bet doubles." % player.name
+        player.current_bet *= 2
+
+# check if players want to play one more round
+def check_one_more_round():
+    while True:
+        user_input = raw_input('Please enter y or n to make your decision: ')
+        if user_input == 'y' or user_input == 'n':
+            return user_input
+        else:
+            print 'Try again - you must enter either y or n: '
+            continue
+
 # Deal cards
 def deal_cards():
     while True:
@@ -250,49 +308,45 @@ def deal_cards():
         check_blackjack(player2)
         check_blackjack(player3)
 
-        while True:
-            print ''
-            input_player_choice(player1)
-            if check_bust(player1) == True:
-                break
-            elif player1.status == 1:
-                break
-            else:
-                continue
-
-        while True:
-            print ''
-            input_player_choice(player2)
-            if check_bust(player2) == True:
-                break
-            elif player2.status == 1:
-                break
-            else:
-                continue
-
-        while True:
-            print ''
-            input_player_choice(player3)
-            if check_bust(player3) == True:
-                break
-            elif player3.status == 1:
-                break
-            else:
-                continue
+        check_hands(player1)
+        check_hands(player2)
+        check_hands(player3)
 
         print ''
         print "Dealer's hand: %s" % [str(x) for x in dealer]
-
         while True:
-            count_dealer = 0
-            for x in dealer:
-                count_dealer += x.size
-
-            if count_dealer < 17:
+            if check_hands_size(dealer) < 17:
                 dealer.append(new_deck.deck_list.pop())
+                continue
+            elif check_hands_size(dealer) > 21:
+                print "Dealer busts. All players's current bet doubles!!!"
+                player1.current_bet *= 2
+                player2.current_bet *= 2
+                player3.current_bet *= 2
+                break
+            else:
+                compare_size(player1)
+                compare_size(player2)
+                compare_size(player3)
+                break
 
-
-
+        print ''
+        print 'Game over.'
+        print player1
+        print player2
+        print player3
+        print ''
+        print 'One more round ????'
+        if check_one_more_round() == 'y':
+            new_deck.reset()
+            new_deck.shuffle_deck()
+            player1.reset()
+            player2.reset()
+            player3.reset()
+            continue
+        else:
+            print 'Thank you for playing. See you next time!!!'
+            break
 
 # A game starts here:
 player1 = Player('Player 1')
